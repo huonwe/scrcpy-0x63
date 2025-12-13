@@ -17,6 +17,7 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.view.Surface;
@@ -54,6 +55,8 @@ public class SurfaceEncoder implements AsyncProcessor {
 
     private final AtomicBoolean requestIDR = new AtomicBoolean(false);
 
+    private MediaCodec mediaCodec;
+
     public SurfaceEncoder(SurfaceCapture capture, Streamer streamer, Options options) {
         this.capture = capture;
         this.streamer = streamer;
@@ -66,7 +69,7 @@ public class SurfaceEncoder implements AsyncProcessor {
 
     private void streamCapture() throws IOException, ConfigurationException {
         Codec codec = streamer.getCodec();
-        MediaCodec mediaCodec = createMediaCodec(codec, encoderName);
+        mediaCodec = createMediaCodec(codec, encoderName);
         MediaFormat format = createFormat(codec.getMimeType(), videoBitRate, maxFps, codecOptions);
 
         capture.init(reset);
@@ -353,11 +356,11 @@ public class SurfaceEncoder implements AsyncProcessor {
     }
 
     public void requestKeyFrame() {
-        if (codec != null) {
+        if (mediaCodec != null) {
             try {
                 Bundle params = new Bundle();
                 params.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0);
-                codec.setParameters(params);
+                mediaCodec.setParameters(params);
                 Ln.i("Force KeyFrame Requested via External Thread!");
             } catch (IllegalStateException e) {
                 // Codec 可能还没准备好或已经释放

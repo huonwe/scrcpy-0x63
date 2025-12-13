@@ -331,6 +331,9 @@ public class Controller implements AsyncProcessor, VirtualDisplayListener {
             case ControlMessage.TYPE_RESET_VIDEO:
                 resetVideo();
                 break;
+            case ControlMessage.TYPE_REQUEST_KEY_FRAME:
+                device.getScreenEncoder().requestKeyFrame();
+                break;
             default:
                 // do nothing
         }

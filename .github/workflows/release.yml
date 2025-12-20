@@ -70,6 +70,8 @@ jobs:
     needs:
       - build-scrcpy-server
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -91,3 +93,12 @@ jobs:
         with:
           name: scrcpy-release-${{ env.VERSION }}
           path: release/output
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          files: release/output/*
+          name: Latest Release
+          prerelease: false
+          make_latest: true

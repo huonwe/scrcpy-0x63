@@ -1,3 +1,5 @@
+// modified by Hiroi 2025/12/21
+
 package com.genymobile.scrcpy.control;
 
 import com.genymobile.scrcpy.device.Position;

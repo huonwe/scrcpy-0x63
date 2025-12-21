@@ -1,3 +1,5 @@
+// modified by Hiroi 2025/12/21
+
 package com.genymobile.scrcpy.video;
 
 import com.genymobile.scrcpy.AndroidVersions;
@@ -208,21 +210,7 @@ public class SurfaceEncoder implements AsyncProcessor {
 
         boolean eos;
         do {
-            // if (requestIDR.getAndSet(false)) {
-            // try {
-            // Bundle params = new Bundle();
-            // params.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0);
-            // codec.setParameters(params);
-            // // Ln.d("Requested key frame");
-            // } catch (Exception e) {
-            // // Ln.e("[server] Failed to request key frame", e);
-            // }
-            // }
             int outputBufferId = codec.dequeueOutputBuffer(bufferInfo, -1); // 40ms
-            // if (outputBufferId == MediaCodec.INFO_TRY_AGAIN_LATER) {
-            // // 超时了，说明没有新画面，直接进入下一次循环去检查 requestIDR
-            // continue;
-            // }
             try {
                 eos = (bufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0;
                 // On EOS, there might be data or not, depending on bufferInfo.size
@@ -363,7 +351,6 @@ public class SurfaceEncoder implements AsyncProcessor {
                 mediaCodec.setParameters(params);
                 Ln.i("Force KeyFrame Requested via External Thread!");
             } catch (IllegalStateException e) {
-                // Codec 可能还没准备好或已经释放
                 Ln.w("Cannot request key frame: codec state illegal");
             }
         }
